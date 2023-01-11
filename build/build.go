@@ -9,14 +9,21 @@ import (
 	"path/filepath"
 )
 
-func Build(code string, module string) {
+func Build(code string, module string, debug bool, strip bool, hide bool) {
 	log.Info("build...")
-
 	cmd := []string{
 		"build",
 		"-o",
 		"output.exe",
+		"-ldflags",
+		"",
 		"output/main.go",
+	}
+	if debug {
+		cmd[4] = "-s -w"
+	}
+	if hide {
+		cmd[4] = "-s -w -H windowsgui"
 	}
 	privateBuild(code, cmd, module)
 }

